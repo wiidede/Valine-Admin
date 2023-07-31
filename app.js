@@ -66,6 +66,10 @@ app.get('/resend_mails', async function (req, res) {
   res.send(await AV.Cloud.rpc("resend_mails"))
 })
 
+app.get('/verify_mail', async function (req, res) {
+  res.send(await AV.Cloud.rpc("verify_mail"))
+})
+
 // 登出账号
 app.get('/logout', function (req, res) {
   req.currentUser.logOut();

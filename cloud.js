@@ -4,27 +4,32 @@ const Comment = AV.Object.extend('Comment');
 const request = require('request');
 
 async function sendMailByComment(comment) {
-    // 通知站长
-    await mail.notice(comment);
-
-    // AT评论通知
-    let pid = comment.get('pid');
-
-    if (!pid) {
-        return;
+    const taskList = [];
+    let err = false
+    const status = comment.get('isNotified');
+    if (!status || status === 'noticed') {
+        taskList.push(mail.notice(comment).catch(e => {
+            err = true
+            console.error(`评论(${comment.get('objectId')})【${comment.get('comment')}】 通知站长失败 `, e);
+        }).then(() => {
+            comment.set('isNotified', 'noticed')
+        }))
     }
-
-    // 通过被 @ 的评论 id, 则找到这条评论留下的邮箱并发送通知.
-    let query = new AV.Query('Comment');
-    const parentComment = await query.get(pid)
-    if (!parentComment) {
-        console.error("oops, 找不到回复的评论了");
-        return;
+    if (!status || status === 'sended') {
+        taskList.push(mail.send(comment).catch(e => {
+            err = true
+            console.error(`评论(${comment.get('objectId')})【${comment.get('comment')}】 发送被@者失败 `, e);
+        }).then(() => {
+            comment.set('isNotified', 'sended')
+        }))
     }
-    if (parentComment.get('mail')) {
-        mail.send(comment, parentComment);
-    } else {
-        console.log(comment.get('nick') + " @ 了" + parentComment.get('nick') + ", 但被 @ 的人没留邮箱... 无法通知");
+    await Promise.allSettled(taskList)
+    if (!err) {
+        comment.set('isNotified', true)
+    }
+    comment.save()
+    if (err) {
+        throw new Error('发送邮件失败');
     }
 }
 
@@ -43,15 +48,15 @@ AV.Cloud.define('resend_mails', async function (req) {
     // 如果你的评论量很大，可以适当调高数量限制，最高1000
     query.limit(200);
     const results = await query.find();
-    await Promise.all(results.map(async (comment) => {
-        sendMailByComment(comment)
-    }))
+    await Promise.all(results.map(comment => sendMailByComment(comment)))
     console.log(`昨日${results.length}条未成功发送的通知邮件处理完毕！`);
     return 'finish'
 });
 
 AV.Cloud.define('verify_mail', async function (req) {
-    return mail.verify();
+    const res = await mail.verify();
+    console.log(res);
+    return res
 })
 
 AV.Cloud.define('self_wake', function (req) {
