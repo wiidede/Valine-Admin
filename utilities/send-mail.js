@@ -99,8 +99,9 @@ exports.send = (currentComment, parentComment) => new Promise((resolve, reject) 
 })
 
 // 该方法可验证 SMTP 是否配置正确
-exports.verify = function () {
+exports.verify = new Promise((resolve, reject) => {
     transporter.verify(function (error, success) {
-        return error || success
+        if (error) reject(error);
+        resolve(success);
     });
-};
+})

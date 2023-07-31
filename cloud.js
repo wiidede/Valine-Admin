@@ -50,7 +50,7 @@ AV.Cloud.define('resend_mails', async function (req) {
     return 'finish'
 });
 
-AV.Cloud.define('verify_mail', function (req) {
+AV.Cloud.define('verify_mail', async function (req) {
     return mail.verify();
 })
 
