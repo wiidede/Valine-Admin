@@ -17,22 +17,23 @@ async function sendMailByComment(comment) {
 
     // 通过被 @ 的评论 id, 则找到这条评论留下的邮箱并发送通知.
     let query = new AV.Query('Comment');
-    query.get(pid).then(function (parentComment) {
-        if (parentComment.get('mail')) {
-            mail.send(comment, parentComment);
-        } else {
-            console.log(comment.get('nick') + " @ 了" + parentComment.get('nick') + ", 但被 @ 的人没留邮箱... 无法通知");
-        }
-    }, function (error) {
-        console.warn('好像 @ 了一个不存在的人!!!');
-    });
+    const parentComment = await query.get(pid)
+    if (!parentComment) {
+        console.log("oops, 找不到回复的评论了");
+        return;
+    }
+    if (parentComment.get('mail')) {
+        mail.send(comment, parentComment);
+    } else {
+        console.log(comment.get('nick') + " @ 了" + parentComment.get('nick') + ", 但被 @ 的人没留邮箱... 无法通知");
+    }
 }
 
 
-AV.Cloud.afterSave('Comment', function (request) {
+AV.Cloud.afterSave('Comment', async function (request) {
     let currentComment = request.object;
-
-    sendMailByComment(currentComment)
+    await sendMailByComment(currentComment)
+    return 'finish'
 });
 
 AV.Cloud.define('resend_mails', async function (req) {
@@ -46,10 +47,10 @@ AV.Cloud.define('resend_mails', async function (req) {
         sendMailByComment(comment)
     }))
     console.log(`昨日${results.length}条未成功发送的通知邮件处理完毕！`);
-    return 'success'
+    return 'finish'
 });
 
-AV.Cloud.define('verify mail', function (req) {
+AV.Cloud.define('verify_mail', function (req) {
     return mail.verify();
 })
 
