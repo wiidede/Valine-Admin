@@ -7,3 +7,5 @@ start.sh
 # VIM
 *~
 *.swp
+
+.env
