@@ -11,7 +11,6 @@ async function sendMailByComment(comment) {
     let pid = comment.get('pid');
 
     if (!pid) {
-        console.log("这条评论没有 @ 任何人");
         return;
     }
 
@@ -19,7 +18,7 @@ async function sendMailByComment(comment) {
     let query = new AV.Query('Comment');
     const parentComment = await query.get(pid)
     if (!parentComment) {
-        console.log("oops, 找不到回复的评论了");
+        console.error("oops, 找不到回复的评论了");
         return;
     }
     if (parentComment.get('mail')) {
@@ -32,6 +31,7 @@ async function sendMailByComment(comment) {
 
 AV.Cloud.afterSave('Comment', async function (request) {
     let currentComment = request.object;
+    console.log('hook(after save comment - 收到一条评论): ', JSON.stringify(currentComment));
     await sendMailByComment(currentComment)
     return 'finish'
 });

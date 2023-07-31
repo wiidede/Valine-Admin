@@ -62,17 +62,8 @@ app.post('/login', function (req, res) {
   }
 });
 
-app.get('/resend_mails', function (req, res) {
-  AV.Cloud.rpc("resend_mails").then(
-    function (object) {
-      // 处理结果
-      console.log(object);
-    },
-    function (error) {
-      // 处理报错
-      console.log(error);
-    }
-  );
+app.get('/resend_mails', async function (req, res) {
+  res.send(await AV.Cloud.rpc("resend_mails"))
 })
 
 // 登出账号
