@@ -52,7 +52,7 @@ exports.notice = async function (comment) {
     siteUrl: process.env.SITE_URL,
     name: comment.get('nick'),
     text: comment.get('comment'),
-    url: process.env.SITE_URL + comment.get('url'),
+    url: `${process.env.SITE_URL + comment.get('url')}#${comment.get('objectId')}`,
   })
 
   const mailOptions = {
