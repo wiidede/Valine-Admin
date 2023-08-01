@@ -1,0 +1,9 @@
+{
+  "extends": "@antfu",
+  "rules": {
+    "no-console": "off"
+  },
+  "ignorePatterns": [
+    "*.ejs"
+  ]
+}
