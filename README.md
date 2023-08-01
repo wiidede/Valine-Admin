@@ -4,12 +4,12 @@
 
 可以追溯到 [DesertsP/Valine-Admin](https://github.com/DesertsP/Valine-Admin)
 
-## 目的
+## ✨✨✨目的
 
 1. 受限于LeanCloud实例只能绑定备案后的域名，旧的唤醒策论需要一定的条件，所以这里我采用了新的策略。
-2. **你无需再创建定时任务**！！！
-3. 服务器启动1分钟后尝试第一次扫描评论，然后每隔2分钟扫描一次评论，如果昨天的评论，都是通知过的，则结束循环
-4. 引入eslint
+2. ✨**你无需再创建定时任务**！！！
+3. ✨服务器启动1分钟后尝试第一次扫描评论，然后每隔2分钟扫描一次评论，如果昨天的评论，都是通知过的，则结束循环
+4. ✨引入eslint
 5. 旧的策略依旧有效，但这不是本项目的目的
 
 ## 简介
@@ -24,7 +24,7 @@
 
 然后进入 [Leancloud](https://leancloud.cn/dashboard/applist.html#/apps) 对应的 Valine 应用中。
 
-点击 `云引擎 -> 设置` 填写代码库并保存：`https://github.com/zhaojun1998/Valine-Admin`
+点击 `云引擎 -> 设置` 填写代码库并保存：`https://github.com/wiidede/Valine-Admin`
 
 <img width="700" src="https://cdn.jun6.net/201804211508_545.png" />
 
