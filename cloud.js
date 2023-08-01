@@ -5,6 +5,10 @@ const mail = require('./utilities/send-mail')
 
 const Comment = AV.Object.extend('Comment')
 
+function formatComment(comment) {
+  return `评论(${comment.get('objectId')}) by ${comment.get('nick')} - 【${comment.get('comment')}】`
+}
+
 async function sendMailByComment(comment) {
   const taskList = []
   let err = false
@@ -13,25 +17,27 @@ async function sendMailByComment(comment) {
   if (!isNotified || notifyStatus === 'noticed') {
     taskList.push(mail.notice(comment).catch((e) => {
       err = true
-      console.error(`评论(${comment.get('objectId')})【${comment.get('comment')}】 通知站长失败 `, e)
+      console.error(`通知站长失败: ${formatComment(comment)}`, e)
     }).then(() => {
+      console.log(`通知站长成功: ${formatComment(comment)}`)
       comment.set('notifyStatus', 'noticed')
     }))
   }
   if (!isNotified || notifyStatus === 'sended') {
     taskList.push(mail.send(comment).catch((e) => {
       err = true
-      console.error(`评论(${comment.get('objectId')})【${comment.get('comment')}】 发送被@者失败 `, e)
+      console.error(`发送被@者失败: ${formatComment(comment)}`, e)
     }).then(() => {
+      console.log(`发送被@者成功: ${formatComment(comment)}`)
       comment.set('notifyStatus', 'sended')
     }))
   }
   await Promise.allSettled(taskList)
+
   if (!err) {
     comment.set('isNotified', true)
     comment.set('notifyStatus', 'finish')
   }
-
   comment.save()
   if (err)
     throw new Error('发送邮件失败')
@@ -39,7 +45,7 @@ async function sendMailByComment(comment) {
 
 AV.Cloud.afterSave('Comment', async (request) => {
   const currentComment = request.object
-  console.log('hook(after save comment - 收到一条评论): ', JSON.stringify(currentComment))
+  console.log('hook(after save comment - 收到一条评论): ', formatComment(currentComment))
   await sendMailByComment(currentComment)
   return 'finish'
 })
@@ -51,7 +57,7 @@ AV.Cloud.define('resend_mails', async () => {
   // 如果你的评论量很大，可以适当调高数量限制，最高1000
   query.limit(200)
   const results = await query.find()
-  await Promise.all(results.map(comment => sendMailByComment(comment)))
+  await Promise.allSettled(results.map(comment => sendMailByComment(comment)))
   console.log(`昨日${results.length}条未成功发送的通知邮件处理完毕！`)
   return results.length
 })
