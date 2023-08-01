@@ -1,6 +1,16 @@
-# Valine Admin
+# Valine Admin by wiidede
 
+本仓库是fork于 [Druadach/Valine-Admin](https://github.com/Druadach/Valine-Admin)
 
+可以追溯到 [DesertsP/Valine-Admin](https://github.com/DesertsP/Valine-Admin)
+
+## 目的
+
+1. 受限于LeanCloud实例只能绑定备案后的域名，旧的唤醒策论需要一定的条件，所以这里我采用了新的策略。
+2. **你无需再创建定时任务**！！！
+3. 服务器启动1分钟后尝试第一次扫描评论，然后每隔2分钟扫描一次评论，如果昨天的评论，都是通知过的，则结束循环
+4. 引入eslint
+5. 旧的策略依旧有效，但这不是本项目的目的
 
 ## 简介
 
@@ -8,14 +18,13 @@
 
 <a href="/高级配置.md#邮件通知展示" target="_black">点击查看演示</a>
 
-
 ## 快速开始
 
 首先需要确保 Valine 的基础功能是正常的，参考 [Valine Docs](https://valine.js.org)。
 
 然后进入 [Leancloud](https://leancloud.cn/dashboard/applist.html#/apps) 对应的 Valine 应用中。
 
-点击 `云引擎 -> 设置` 填写代码库并保存：`https://github.com/zhaojun1998/Valine-Admin`  
+点击 `云引擎 -> 设置` 填写代码库并保存：`https://github.com/zhaojun1998/Valine-Admin`
 
 <img width="700" src="https://cdn.jun6.net/201804211508_545.png" />
 
@@ -23,15 +32,13 @@
 <img width="700" src="https://cdn.jun6.net/201801112055_212.png" />
 <img width="700" src="https://cdn.jun6.net/201804211336_271.png" />
 
-
-
 ## 配置项
 
 此外，你需要设置云引擎的环境变量以提供必要的信息，点击云引擎的设置页，设置如下信息：
 
 <img width="700" src="https://cdn.jun6.net/201806062257_798.png" />
 
-**必选参数**
+### 必选参数
 
 * `SITE_NAME` : 网站名称。
 * `SITE_URL` : 网站地址, **最后不要加 `/` 。**
@@ -50,7 +57,7 @@
 
 [Web 评论管理](/高级配置.md#web-评论管理)
 
-[Leancloud 休眠策略(必看)](/高级配置.md#leancloud-休眠策略)
+[Leancloud 休眠策略(必看)](/高级配置.md#leancloud-休眠策略)~~
 
 [开发指南](/高级配置.md#开发)
 
@@ -59,7 +66,7 @@
 * 12.01 新增自助添加定时器方式。详见: [LeanCloud 自带定时器[推荐方式]](/高级配置.md#leancloud-自带定时器推荐)
 
 * 7.30 修复 @ 邮件通知出错 bug (需 [Valine 1.3.0](https://valine.js.org/changelog.html#v1-3-0-2018-07-29) 支持)，优化发件逻辑，站长发的评论不再收到邮件通知。
-* 7.7 兼容 `valine v1.2.0-beta ` 版本对 at 的更改 [点击查看](https://valine.js.org/changelog.html#v1-2-0-beta-2018-06-30)
+* 7.7 兼容 `valine v1.2.0-beta` 版本对 at 的更改 [点击查看](https://valine.js.org/changelog.html#v1-2-0-beta-2018-06-30)
 * 7.1 修复 `Web` 后台登录安全 `bug`
 * 6.14 添加自定义邮件服务器功能. [点击查看](/高级配置.md#自定义邮件服务器)
 
@@ -80,7 +87,3 @@
 <img width="500" src="https://cdn.jun6.net/201807081507_968.png"/>
 
 > **注: 更新新版本与更改环境变量均需要重启容器后生效。**
-
-
-
-**注：本项目修改于 panjunwen 的项目 : [Valine-Admin](https://github.com/panjunwen/Valine-Admin) (部分逻辑于功能不同，还请读者不要搞混配置项.)**
