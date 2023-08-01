@@ -9,7 +9,7 @@ async function sendMailByComment(comment) {
   const taskList = []
   let err = false
   const status = comment.get('isNotified')
-  if (!status || status === 'noticed') {
+  if (!status || status === 'false' || status === 'noticed') {
     taskList.push(mail.notice(comment).catch((e) => {
       err = true
       console.error(`评论(${comment.get('objectId')})【${comment.get('comment')}】 通知站长失败 `, e)
@@ -17,7 +17,7 @@ async function sendMailByComment(comment) {
       comment.set('isNotified', 'noticed')
     }))
   }
-  if (!status || status === 'sended') {
+  if (!status || status === 'false' || status === 'sended') {
     taskList.push(mail.send(comment).catch((e) => {
       err = true
       console.error(`评论(${comment.get('objectId')})【${comment.get('comment')}】 发送被@者失败 `, e)
@@ -27,7 +27,7 @@ async function sendMailByComment(comment) {
   }
   await Promise.allSettled(taskList)
   if (!err)
-    comment.set('isNotified', true)
+    comment.set('isNotified', 'true')
 
   comment.save()
   if (err)
@@ -44,6 +44,7 @@ AV.Cloud.afterSave('Comment', async (request) => {
 AV.Cloud.define('resend_mails', async () => {
   const query = new AV.Query(Comment)
   query.greaterThanOrEqualTo('createdAt', new Date(new Date().getTime() - 24 * 60 * 60 * 1000))
+  query.notEqualTo('isNotified', 'true')
   query.notEqualTo('isNotified', true)
   // 如果你的评论量很大，可以适当调高数量限制，最高1000
   query.limit(200)

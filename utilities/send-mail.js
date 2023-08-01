@@ -71,7 +71,7 @@ exports.send = async function (comment) {
   const pid = comment.get('pid')
   if (!pid)
     return ('send skipped')
-    // 通过被 @ 的评论 id, 则找到这条评论留下的邮箱并发送通知.
+  // 通过被 @ 的评论 id, 则找到这条评论留下的邮箱并发送通知.
   const query = new AV.Query('Comment')
   const parentComment = await query.get(pid)
   if (!parentComment) {
