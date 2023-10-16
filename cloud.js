@@ -20,7 +20,7 @@ async function sendMailByComment(comment) {
       console.error(`通知站长失败: ${formatComment(comment)}`, e)
     }).then((msg) => {
       if (typeof msg === 'string' && msg.startsWith('notice skipped'))
-        console.log(`跳过(${msg}): ${formatComment(comment)}`)
+        console.log(`跳过(${msg.slice('notice skipped'.length)}): ${formatComment(comment)}`)
       else
         console.log(`通知站长成功: ${formatComment(comment)}`)
       comment.set('notifyStatus', 'noticed')
@@ -32,7 +32,7 @@ async function sendMailByComment(comment) {
       console.error(`发送被@者失败: ${formatComment(comment)}`, e)
     }).then((msg) => {
       if (typeof msg === 'string' && msg.startsWith('send skipped'))
-        console.log(`跳过(${msg}): ${formatComment(comment)}`)
+        console.log(`跳过(${msg.slice('send skipped'.length)}): ${formatComment(comment)}`)
       else
         console.log(`发送被@者成功: ${formatComment(comment)}`)
       comment.set('notifyStatus', 'sended')

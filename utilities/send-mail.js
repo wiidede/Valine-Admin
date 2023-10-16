@@ -74,10 +74,8 @@ exports.send = async function (comment) {
   // 通过被 @ 的评论 id, 则找到这条评论留下的邮箱并发送通知.
   const query = new AV.Query('Comment')
   const parentComment = await query.get(pid)
-  if (!parentComment) {
-    console.error('oops, 找不到回复的评论了')
-    return 'send skipped: 找不到回复的评论了'
-  }
+  if (!parentComment)
+    return 'send skipped: oops, 找不到回复的评论了'
   if (parentComment.get('mail')) {
     // 站长被 @ 不需要提醒
     if (parentComment.get('mail') === process.env.TO_EMAIL
@@ -104,7 +102,7 @@ exports.send = async function (comment) {
     return await sendMail(mailOptions)
   }
   else {
-    console.log(`${comment.get('nick')} @ 了${parentComment.get('nick')}, 但被 @ 的人没留邮箱... 无法通知`)
+    return `send skipped: ${comment.get('nick')} @ 了${parentComment.get('nick')}, 但被 @ 的人没留邮箱... 无法通知`
   }
 }
 
