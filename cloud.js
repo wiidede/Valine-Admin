@@ -18,8 +18,11 @@ async function sendMailByComment(comment) {
     taskList.push(mail.notice(comment).catch((e) => {
       err = true
       console.error(`通知站长失败: ${formatComment(comment)}`, e)
-    }).then(() => {
-      console.log(`通知站长成功: ${formatComment(comment)}`)
+    }).then((msg) => {
+      if (typeof msg === 'string' && msg.startsWith('notice skipped'))
+        console.log(`跳过(${msg}): ${formatComment(comment)}`)
+      else
+        console.log(`通知站长成功: ${formatComment(comment)}`)
       comment.set('notifyStatus', 'noticed')
     }))
   }
@@ -27,8 +30,11 @@ async function sendMailByComment(comment) {
     taskList.push(mail.send(comment).catch((e) => {
       err = true
       console.error(`发送被@者失败: ${formatComment(comment)}`, e)
-    }).then(() => {
-      console.log(`发送被@者成功: ${formatComment(comment)}`)
+    }).then((msg) => {
+      if (typeof msg === 'string' && msg.startsWith('send skipped'))
+        console.log(`跳过(${msg}): ${formatComment(comment)}`)
+      else
+        console.log(`发送被@者成功: ${formatComment(comment)}`)
       comment.set('notifyStatus', 'sended')
     }))
   }
