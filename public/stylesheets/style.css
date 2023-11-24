@@ -1,5 +1,5 @@
 body {
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Droid Sans,Helvetica Neue,sans-serif;
   font-size: 1rem;
 }
 
@@ -29,21 +29,21 @@ li {
   padding: 0;
 }
 
-
-.header {
+.header{
   display: flex;
   -ms-flex-direction: row;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.header .title {
-  flex: 90%;
+@media screen and (max-width:768px) {
+  .comment-main {
+      padding: 1rem;
+  }
 }
 
-.logout-wrapper {}
-
-.comment-main {
+.comment-main{
   padding: 1rem 5rem;
 }
 
@@ -51,7 +51,7 @@ li {
   padding-bottom: 0.5rem;
 }
 
-.vhead a {
+.vhead a , .vhead #nick {
   font-weight: bolder;
   color: #333;
 }
@@ -70,6 +70,7 @@ li {
 
 .vcomment {
   line-height: 1.8;
+  word-wrap: break-word;
 }
 
 .vcard {
@@ -94,12 +95,16 @@ li {
   margin-top: 4rem;
 }
 
+.gh-signup {
+  width: 600px !important;
+}
+
 .gh-signin {
   display: flex;
   -ms-flex-direction: column;
   flex-direction: column;
   padding: 1rem 2rem;
-  width: 350px;
+  width: 320px;
   border: 1px solid #dae1e3;
   background: #f8fbfd;
   border-radius: 5px;
@@ -117,7 +122,7 @@ li {
 
 .sign-in-wrap input {
   padding: 10px;
-  margin: 1rem 1rem;
+  margin: 1rem 0;
   border: 1px solid #dae1e3;
   font-size: 1rem;
   line-height: 1.5em;
@@ -147,4 +152,9 @@ li {
 
 .red {
   color: #ee1000;
+}
+
+.blue{
+  padding-left: 9px;
+  color: #33b1ff;
 }
