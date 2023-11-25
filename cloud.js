@@ -2,6 +2,7 @@ const process = require('node:process')
 const AV = require('leanengine')
 const request = require('request')
 const mail = require('./utilities/send-mail')
+const spam = require('./utilities/check-spam')
 
 const Comment = AV.Object.extend('Comment')
 
@@ -9,7 +10,10 @@ function formatComment(comment) {
   return `评论(${comment.get('objectId')}) by ${comment.get('nick')} - 【${comment.get('comment')}】`
 }
 
-async function sendMailByComment(comment) {
+async function sendMailByComment(comment, defaultIp) {
+  const ip = comment.get('ip') || defaultIp
+  spam.checkSpam(comment, ip)
+
   const taskList = []
   let err = false
   const isNotified = comment.get('isNotified')
@@ -52,7 +56,7 @@ async function sendMailByComment(comment) {
 AV.Cloud.afterSave('Comment', async (request) => {
   const currentComment = request.object
   console.log('hook(after save comment - 收到一条评论): ', formatComment(currentComment))
-  await sendMailByComment(currentComment)
+  await sendMailByComment(currentComment, request.meta.remoteAddress)
   return 'finish'
 })
 
