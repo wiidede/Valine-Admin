@@ -8,17 +8,20 @@ const akismetClient = akismet.client({
   blog: process.env.SITE_URL,
 })
 
-exports.checkSpam = (comment, ip) => {
+exports.checkSpam = (comment, ip) => new Promise((resolve) => {
   if (process.env.AKISMET_KEY === 'MANUAL_REVIEW') {
     console.log('已使用人工审核模式，评论审核后才会发表~')
     comment.setACL(new AV.ACL({ '*': { read: false } }))
     comment.set('isSpam', true)
     comment.save()
+    resolve(undefined)
     return
   }
   akismetClient.verifyKey((err, valid) => {
-    if (err)
+    if (err) {
       console.log('Akismet key 异常:', err.message)
+      resolve(undefined)
+    }
     if (valid) {
       // TODO(1) 这里有缺陷
       comment.set('ip', ip)
@@ -34,26 +37,33 @@ exports.checkSpam = (comment, ip) => {
         comment_content: comment.get('comment'),
         // is_test : true // Default value is false
       }, (err, spam) => {
-        if (err)
+        if (err) {
           console.log (`垃圾评论检测出错！${err}`)
+          resolve(undefined)
+        }
         if (spam) {
           console.log('逮到一只垃圾评论，烧死它！用文火~')
           comment.set('isSpam', true)
           comment.setACL(new AV.ACL({ '*': { read: false } }))
           comment.save()
           // comment.destroy();
+          resolve(true)
         }
         else {
           comment.set('isSpam', false)
           comment.setACL(new AV.ACL({ '*': { read: true } }))
           comment.save()
           console.log('垃圾评论检测完成，放行~')
+          resolve(false)
         }
       })
     }
-    else { console.log('未开启垃圾评论过滤或Akismet key 异常!') }
+    else {
+      console.log('未开启垃圾评论过滤或Akismet key 异常!')
+      resolve(undefined)
+    }
   })
-}
+})
 exports.submitSpam = (comment) => {
   if (process.env.AKISMET_KEY === 'MANUAL_REVIEW')
     return
