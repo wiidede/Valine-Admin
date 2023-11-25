@@ -44,6 +44,7 @@ app.get('/', (req, res) => {
 
 // 可以将一类的路由单独保存在一个文件中
 app.use('/comments', require('./routes/comments'))
+app.use('/sign-up', require('./routes/sign-up'))
 
 // 处理登录请求（可能来自登录界面中的表单）
 app.post('/login', (req, res) => {
