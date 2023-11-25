@@ -28,6 +28,7 @@ const noticeTemplate = ejs.compile(fs.readFileSync(path.resolve(process.cwd(), '
 const sendTemplate = ejs.compile(fs.readFileSync(path.resolve(process.cwd(), 'template', templateName, 'send.ejs'), 'utf8'))
 
 function sendMail(mailOptions) {
+  console.log('发送邮件给: ', mailOptions?.to)
   return new Promise((resolve, reject) => {
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
