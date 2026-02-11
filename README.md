@@ -1,3 +1,6 @@
+> [!Caution]
+> [关于 LeanCloud 停止对外提供服务的通知](https://docs.leancloud.app/sdk/announcements/sunset-announcement/)
+
 ![valine-mail](./valine-mail.svg)
 
 # valine-mail
